@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">CurrencyConverter</string>
+    <string name="home_title">Currency Converter</string>
+    <string name="refresh_button">Refresh Rates</string>
+    <string name="screen_home_title">Home</string>
+    <string name="screen_converter_title">Converter</string>
+    <string name="screen_history_title">History</string>
+    <string name="amount">Amount</string>
+    <string name="convert_from">Convert from</string>
+    <string name="convert_to">Convert to</string>
+    <string name="convert_button">Convert</string>
+    <string name="start_date">Date from</string>
+    <string name="end_date">Date to</string>
+    <string name="currency">Currency</string>
+    <string name="history_button">Get history</string>
+    <string name="symbols">Currencies codes\n</string>
+    <string name="converter_title">Converter</string>
+    <string name="historical_rates">Historical Rates</string>
+    <string name="base_currency">Base Currency</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
+    <string name="day">Day</string>
+    <string name="fetch_historical_data">Fetch Historical Data</string>
+    <string name="currency_converter">Currency Converter</string>
+    <string name="enter_currency_code">Enter currency code</string>
+    <string name="refresh_rates">Refresh Rates</string>
 </resources>

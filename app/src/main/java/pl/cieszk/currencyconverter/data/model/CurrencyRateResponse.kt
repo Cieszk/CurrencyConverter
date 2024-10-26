@@ -1,7 +1,6 @@
 package pl.cieszk.currencyconverter.data.model
 
 data class CurrencyRateResponse(
-    val base: String,
-    val date: String,
-    val rates: Map<String, Double>
+    val base_code: String,
+    val conversion_rates: Map<String, Double>
 )

@@ -1,5 +1,6 @@
 package pl.cieszk.currencyconverter.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,38 +11,77 @@ import pl.cieszk.currencyconverter.data.api.RetrofitInstance
 import pl.cieszk.currencyconverter.data.model.ConversionResponse
 import pl.cieszk.currencyconverter.data.model.CurrencyRateResponse
 import pl.cieszk.currencyconverter.data.model.HistoryResponse
+import retrofit2.HttpException
+import java.io.IOException
 
-class CurrencyViewModel: ViewModel() {
-    private val _currencyRate = MutableStateFlow<CurrencyRateResponse?>(null)
-    val currencyRates: StateFlow<CurrencyRateResponse?> = _currencyRate
+class CurrencyViewModel : ViewModel() {
 
-    private val _conversionResult = MutableStateFlow<ConversionResponse?>(null)
-    val conversionResult: StateFlow<ConversionResponse?> = _conversionResult
+    private val _currencyRate = MutableStateFlow<Result<CurrencyRateResponse?>>(Result.success(null))
+    val currencyRates: StateFlow<Result<CurrencyRateResponse?>> = _currencyRate
 
-    private val _historyRates = MutableStateFlow<HistoryResponse?>(null)
-    val historRates: StateFlow<HistoryResponse?> = _historyRates
+    private val _conversionResult = MutableStateFlow<Result<ConversionResponse?>>(Result.success(null))
+    val conversionResult: StateFlow<Result<ConversionResponse?>> = _conversionResult
+
+    private val _historyRates = MutableStateFlow<Result<HistoryResponse?>>(Result.success(null))
+    val historyRates: StateFlow<Result<HistoryResponse?>> = _historyRates
 
     private val apiKey = BuildConfig.API_KEY
 
+    private fun logError(message: String, throwable: Throwable? = null) {
+        Log.e("CurrencyViewModel", message, throwable)
+    }
 
-    fun getLatestRates(base: String) {
+    fun getLatestRates(selectedCurrency: String) {
         viewModelScope.launch {
-            val response = RetrofitInstance.api.getLatestRates(base, apiKey)
-            _currencyRate.value = response
+            try {
+                val response = RetrofitInstance.api.getLatestRates(selectedCurrency)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    Log.d("API Response", body.toString())
+                    _currencyRate.value = Result.success(body)
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("API Error", "Error: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("API Error", "Unexpected error when fetching latest rates", e)
+            }
         }
     }
 
     fun convertCurrency(amount: Double, from: String, to: String) {
         viewModelScope.launch {
-            val response = RetrofitInstance.api.convertCurrency(from, to , amount, apiKey)
-            _conversionResult.value = response
+            try {
+                val response = RetrofitInstance.api.convertCurrency(from, to, amount)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    Log.d("API Response", body.toString())
+                    _conversionResult.value = Result.success(body)
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("API Error", "Error: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("API Error", "Unexpected error while converting currencies", e)
+            }
         }
     }
 
-    fun getHistoricalRates(startDate: String, endDate: String, base: String, currency: String) {
+    fun getHistoricalRates(base: String, year: String, month: String, day: String) {
         viewModelScope.launch {
-            val response = RetrofitInstance.api.getHistoricalRates(startDate, endDate, base, currency, apiKey)
-            _historyRates.value = response
+            try {
+                val response = RetrofitInstance.api.getHistoricalRates(base, year, month, day)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    Log.d("API Response", body.toString())
+                    _historyRates.value = Result.success(body)
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("API Error", "Error: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("API Error", "Unexpected error when fetching historical rates", e)
+            }
         }
     }
 }

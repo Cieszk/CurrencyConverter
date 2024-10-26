@@ -1,8 +1,9 @@
 package pl.cieszk.currencyconverter.data.model
 
 data class HistoryResponse(
-    val base: String,
-    val start_at: String,
-    val end_at: String,
-    val rates: Map<String, Map<String, Double>>
+    val base_code: String,
+    val year: String,
+    val month: String,
+    val day: String,
+    val conversion_rates: Map<String, Double>
 )
